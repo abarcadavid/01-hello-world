@@ -29,4 +29,15 @@ await deployTxn.sign([deployerKey, zkAppPrivateKey]).send();
 const num0 = zkAppInstance.num.get();
 console.log('State after Init: ', num0.toString());
 
+// Update zkApp with a transaction
+const txn1 = await Mina.transaction(senderAccount, () => {
+  zkAppInstance.update(Field(9));
+});
+await txn1.prove();
+await txn1.sign([senderKey]).send();
+
+// Check the state of 'num' in the Square contract
+const num1 = zkAppInstance.num.get();
+console.log('Value should be 9: ', num1.toString());
+
 console.log('Shutting Down');
