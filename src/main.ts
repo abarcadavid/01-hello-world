@@ -40,4 +40,15 @@ await txn1.sign([senderKey]).send();
 const num1 = zkAppInstance.num.get();
 console.log('Value should be 9: ', num1.toString());
 
+// ---------------------------------
+try {
+  const txn2 = await Mina.transaction(senderAccount, () => {
+    // We should update contract for 'num' to be 81. This will fail.
+    zkAppInstance.update(Field(75));
+  });
+  await txn2.prove();
+  await txn2.sign([senderKey]).send();
+} catch (error: any) {
+  console.log(`Error Message: ${error.message}`);
+}
 console.log('Shutting Down');
